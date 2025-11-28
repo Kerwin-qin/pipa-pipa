@@ -8,7 +8,7 @@
     <!-- 字体与图标 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
@@ -19,11 +19,19 @@
                 extend: {
                     colors: {
                         oriental: {
-                            bg: "#fdfbf7", ink: "#1a1a1a", lightInk: "#575757",
-                            red: "#c63c26", gold: "#d4af37", stone: "#e5e5e0"
+                            bg: "#fbf9f4",    // 更暖的米白
+                            ink: "#1a1a1a",   // 焦墨
+                            lightInk: "#575757", // 淡墨
+                            red: "#b93a28",   // 故宫红（稍暗一点更显高级）
+                            gold: "#d4af37",  // 泥金
+                            stone: "#e5e5e0", // 石色
+                            mist: "#f0efeb"   // 雾色
                         }
                     },
-                    fontFamily: { serif: ['"Noto Serif SC"', 'serif'] }
+                    fontFamily: { serif: ['"Noto Serif SC"', 'serif'] },
+                    backgroundImage: {
+                        'paper-texture': "url('data:image/svg+xml,%3Csvg viewBox=\\'0 0 200 200\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cfilter id=\\'noiseFilter\\'%3E%3CfeTurbulence type=\\'fractalNoise\\' baseFrequency=\\'0.8\\' numOctaves=\\'3\\' stitchTiles=\\'stitch\\'/%3E%3C/filter%3E%3Crect width=\\'100%25\\' height=\\'100%25\\' filter=\\'url(%23noiseFilter)\\' opacity=\\'0.4\\'/%3E%3C/svg%3E')"
+                    }
                 }
             }
         }
@@ -40,14 +48,14 @@
             padding: 4px 24px 4px 10px;
             border-radius: 4px;
             font-family: "Noto Serif SC", serif;
-            font-size: 12px;
+            font-size: 14px;
             cursor: pointer;
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.2rem center;
             background-repeat: no-repeat;
             background-size: 1.5em 1.5em;
         }
-        .lang-select:hover { border-color: #c63c26; color: #c63c26; }
+        .lang-select:hover { border-color: #b93a28; color: #b93a28; }
 
         /* 动画 */
         .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
@@ -59,25 +67,49 @@
         @keyframes moonScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .animate-moon { animation: moonScale 1.5s ease-out forwards; }
         .chat-enter { animation: slideUp 0.3s ease-out forwards; }
+
+        /* 山水背景层动画 */
+        @keyframes mountainFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .mountain-layer { animation: mountainFloat 8s ease-in-out infinite; }
     </style>
 </head>
 <body class="bg-oriental-bg text-oriental-ink font-sans selection:bg-oriental-red selection:text-white relative overflow-x-hidden">
 
-    <!-- 全局噪点背景 -->
-    <div class="fixed inset-0 pointer-events-none opacity-40 z-0" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' opacity=\'0.5\'/%3E%3C/svg%3E')"></div>
+    <!-- 1. 全局纹理 (增强宣纸质感) -->
+    <div class="fixed inset-0 pointer-events-none opacity-50 z-0 bg-paper-texture mix-blend-multiply"></div>
 
-    <!-- 导航栏 -->
+    <!-- 2. 水墨山水背景 (固定在底部，层叠效果) -->
+    <div class="fixed bottom-0 left-0 right-0 z-0 pointer-events-none opacity-30">
+        <!-- 远山 (淡) -->
+        <svg class="absolute bottom-0 w-full h-[30vh] text-oriental-mist" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path fill="currentColor" fill-opacity="1" d="M0,224L80,192C160,160,320,96,480,96C640,96,800,160,960,181.3C1120,203,1280,181,1360,170.7L1440,160L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+        </svg>
+        <!-- 中山 (灰) -->
+        <svg class="absolute bottom-0 w-full h-[25vh] text-oriental-stone mountain-layer" style="animation-duration: 15s" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path fill="currentColor" fill-opacity="1" d="M0,96L60,122.7C120,149,240,203,360,208C480,213,600,171,720,160C840,149,960,171,1080,186.7C1200,203,1320,213,1380,218.7L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+        </svg>
+        <!-- 近山 (深) -->
+        <svg class="absolute bottom-0 w-full h-[15vh] text-gray-300 mountain-layer" style="animation-duration: 10s" viewBox="0 0 1440 320" preserveAspectRatio="none">
+            <path fill="currentColor" fill-opacity="1" d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+    </div>
+
+    <!-- 导航栏 (加宽到 6xl) -->
     <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-5">
-        <div class="max-w-md mx-auto px-6 flex justify-between items-center">
+        <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
             <!-- LOGO -->
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 border border-oriental-ink flex items-center justify-center rounded-full font-serif font-bold text-oriental-red bg-white shadow-sm text-sm">P</div>
-                <span class="font-serif font-bold text-oriental-ink">PIPA</span>
+                <div class="w-10 h-10 border-2 border-oriental-ink flex items-center justify-center rounded-sm font-serif font-bold text-oriental-red bg-white shadow-sm text-lg transform rotate-45">
+                    <span class="transform -rotate-45">P</span>
+                </div>
+                <span class="font-serif font-bold text-oriental-ink text-xl tracking-widest ml-2">PIPA</span>
             </div>
             
-            <div class="flex items-center gap-3">
-                <!-- 原生语言切换器 (保证显示) -->
-                <select id="language-switcher" onchange="changeLanguage(this.value)" class="lang-select">
+            <div class="flex items-center gap-4">
+                <select id="language-switcher" onchange="changeLanguage(this.value)" class="lang-select bg-white/80 backdrop-blur">
                     <option value="en">English</option>
                     <option value="zh">中文</option>
                     <option value="jp">日本語</option>
@@ -85,8 +117,7 @@
                     <option value="es">Español</option>
                 </select>
                 
-                <!-- 菜单按钮 -->
-                <button onclick="toggleMenu()" class="text-oriental-ink z-50 relative ml-1">
+                <button onclick="toggleMenu()" class="text-oriental-ink z-50 relative p-2 hover:bg-oriental-ink/5 rounded-full transition-colors">
                     <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
                 </button>
             </div>
@@ -95,172 +126,217 @@
 
     <!-- 侧边菜单 -->
     <div id="mobile-menu" class="fixed inset-0 bg-oriental-bg z-40 transform translate-x-full transition-transform duration-300 flex flex-col justify-center items-center gap-8 opacity-95 backdrop-blur-xl">
-        <a href="#" onclick="toggleMenu()" class="text-2xl font-serif hover:text-oriental-red transition-colors" data-i18n="menu_home">Home</a>
-        <a href="#why-pipa" onclick="toggleMenu()" class="text-2xl font-serif hover:text-oriental-red transition-colors" data-i18n="menu_why">Why Pipa</a>
-        <a href="#reviews" onclick="toggleMenu()" class="text-2xl font-serif hover:text-oriental-red transition-colors" data-i18n="menu_reviews">Reviews</a>
-        <a href="#signup" onclick="toggleMenu()" class="text-2xl font-serif hover:text-oriental-red transition-colors" data-i18n="menu_contact">Contact</a>
+        <div class="absolute top-0 right-0 w-64 h-full bg-oriental-stone/10 border-l border-oriental-ink/5"></div>
+        <a href="#" onclick="toggleMenu()" class="text-3xl font-serif text-oriental-ink hover:text-oriental-red transition-colors relative z-10" data-i18n="menu_home">Home</a>
+        <a href="#why-pipa" onclick="toggleMenu()" class="text-3xl font-serif text-oriental-ink hover:text-oriental-red transition-colors relative z-10" data-i18n="menu_why">Why Pipa</a>
+        <a href="#reviews" onclick="toggleMenu()" class="text-3xl font-serif text-oriental-ink hover:text-oriental-red transition-colors relative z-10" data-i18n="menu_reviews">Reviews</a>
+        <a href="#signup" onclick="toggleMenu()" class="text-3xl font-serif text-oriental-ink hover:text-oriental-red transition-colors relative z-10" data-i18n="menu_contact">Contact</a>
     </div>
 
-    <!-- 主要内容 -->
-    <main class="max-w-md mx-auto w-full relative z-10 flex flex-col min-h-screen">
+    <!-- 主要内容容器 (改为宽屏 max-w-6xl) -->
+    <main class="max-w-6xl mx-auto w-full relative z-10 flex flex-col min-h-screen">
         
-        <!-- 背景装饰 -->
-        <div class="absolute top-[-50px] right-[-100px] w-[300px] h-[300px] bg-oriental-gold/10 rounded-full blur-[80px] pointer-events-none"></div>
-
-        <!-- Hero -->
-        <section class="pt-28 pb-12 px-6 flex flex-col items-center text-center relative z-10">
-            <div class="reveal-on-scroll is-visible">
-                <div class="flex items-center justify-center gap-2 mb-4">
-                    <div class="h-[1px] w-8 bg-oriental-ink/20"></div>
-                    <span class="text-oriental-ink text-xs tracking-widest uppercase font-serif" data-i18n="hero_badge">The Sound of the Orient</span>
-                    <div class="h-[1px] w-8 bg-oriental-ink/20"></div>
-                </div>
-
-                <h1 class="font-serif text-4xl text-oriental-ink leading-[1.15] mb-6">
-                    <span data-i18n="hero_title_pre">Find Inner Peace with</span> 
-                    <span class="text-oriental-red italic relative inline-block">Pipa</span>
-                </h1>
-                <p class="text-oriental-lightInk text-lg mb-8 leading-relaxed font-light font-serif" data-i18n="hero_subtitle">
-                    Experience the 2,000-year-old healing music. <br/> From TikTok clips to professional mastery.
-                </p>
-            </div>
-
-            <!-- 琵琶 SVG 艺术 -->
-            <div class="w-full mb-10 animate-fade-in">
-                <div class="w-full aspect-[4/5] bg-white rounded-2xl relative shadow-2xl overflow-hidden border border-oriental-stone group">
-                    <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\' opacity=\'0.5\'/%3E%3C/svg%3E')"></div>
-                    <div class="absolute top-12 right-8 w-24 h-24 rounded-full bg-oriental-gold/20 blur-xl animate-moon"></div>
-                    <div class="absolute top-16 right-12 w-16 h-16 rounded-full bg-oriental-gold opacity-80 shadow-[0_0_40px_rgba(212,175,55,0.4)] animate-moon"></div>
-                    <div class="absolute bottom-0 left-0 right-0 h-48 opacity-30">
-                        <svg viewBox="0 0 100 20" preserveAspectRatio="none" class="w-full h-full text-oriental-ink"><path d="M0 20 L20 10 Q30 5 40 10 T60 12 T100 5 L100 20 Z" fill="currentColor" /></svg>
+        <!-- Hero Section (改为左右分栏布局) -->
+        <section class="pt-32 pb-20 px-6 relative z-10 md:min-h-[90vh] md:flex md:items-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full">
+                
+                <!-- 左侧：文字 -->
+                <div class="reveal-on-scroll is-visible text-center md:text-left order-2 md:order-1">
+                    <div class="flex items-center justify-center md:justify-start gap-3 mb-6">
+                        <div class="h-[1px] w-12 bg-oriental-red"></div>
+                        <span class="text-oriental-red text-sm tracking-[0.2em] uppercase font-serif font-bold" data-i18n="hero_badge">The Sound of the Orient</span>
                     </div>
-                    <div class="absolute inset-0 flex items-center justify-center z-10 animate-slide-up">
-                        <svg width="180" height="400" viewBox="0 0 180 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-2xl">
-                            <path d="M90 380 C130 380 160 330 160 260 C160 190 110 120 98 60 L90 20 L82 60 C70 120 20 190 20 260 C20 330 50 380 90 380 Z" fill="#2A2A2A" stroke="#1a1a1a" stroke-width="2"/>
-                            <path d="M90 360 C110 360 120 320 120 280 C120 240 90 240 90 240 C90 240 60 240 60 280 C60 320 70 360 90 360 Z" fill="#1a1a1a"/>
-                            <line x1="86" y1="40" x2="86" y2="340" stroke="#d4af37" stroke-width="1" opacity="0.8"/>
-                            <line x1="92" y1="40" x2="92" y2="340" stroke="#d4af37" stroke-width="1" opacity="0.8"/>
-                            <rect x="70" y="330" width="40" height="6" fill="#4a3b32" rx="2" />
-                            <rect x="80" y="10" width="20" height="30" fill="#2A2A2A" />
-                        </svg>
-                    </div>
-                    <div class="absolute top-8 left-8 w-8 h-20 border border-oriental-red opacity-80 flex items-center justify-center">
-                        <div class="writing-mode-vertical text-oriental-red font-serif text-xs font-bold tracking-widest pt-1">琵琶行</div>
+
+                    <h1 class="font-serif text-5xl md:text-7xl text-oriental-ink leading-[1.1] mb-8">
+                        <span data-i18n="hero_title_pre">Find Inner Peace with</span> <br class="hidden md:block" />
+                        <span class="text-oriental-red italic relative inline-block mt-2">
+                            Pipa
+                            <svg class="absolute -bottom-2 left-0 w-full h-3 text-oriental-gold opacity-50" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                        </span>
+                    </h1>
+                    
+                    <p class="text-oriental-lightInk text-lg md:text-xl mb-10 leading-relaxed font-light font-serif max-w-lg mx-auto md:mx-0" data-i18n="hero_subtitle">
+                        Experience the 2,000-year-old healing music. <br/> From TikTok clips to professional mastery.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <button onclick="document.getElementById('signup').scrollIntoView({ behavior: 'smooth' })" class="px-8 py-4 bg-oriental-red text-white rounded hover:bg-red-800 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center justify-center gap-2 group">
+                            <span data-i18n="cta_button" class="font-serif tracking-wider">Start Journey</span> 
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                        <div class="flex items-center justify-center gap-2 text-oriental-lightInk text-sm font-serif italic px-4">
+                            <div class="flex -space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 border-2 border-white"></div>
+                                <div class="w-8 h-8 rounded-full bg-gray-300 border-2 border-white"></div>
+                                <div class="w-8 h-8 rounded-full bg-gray-400 border-2 border-white"></div>
+                            </div>
+                            <span data-i18n="social_proof">5k+ Joined</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="flex flex-col gap-3 w-full reveal-on-scroll">
-                <button onclick="document.getElementById('signup').scrollIntoView({ behavior: 'smooth' })" class="w-full py-4 bg-oriental-red text-white rounded-lg font-medium shadow-lg shadow-red-900/20 hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
-                    <span data-i18n="cta_button">Start Your Journey</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                </button>
-                <p class="text-xs text-oriental-lightInk mt-1 font-serif italic" data-i18n="social_proof">Join 5,000+ students worldwide</p>
+
+                <!-- 右侧：琵琶视觉 (大图) -->
+                <div class="order-1 md:order-2 animate-fade-in relative flex justify-center">
+                    <div class="w-full max-w-sm md:max-w-md aspect-[3/4] bg-white/50 backdrop-blur-sm rounded-t-full rounded-b-3xl relative shadow-2xl overflow-hidden border border-white/60 group hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-shadow duration-500">
+                        <!-- 金色光晕 -->
+                        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-oriental-gold/20 blur-3xl animate-pulse"></div>
+                        
+                        <!-- 琵琶 SVG -->
+                        <div class="absolute inset-0 flex items-center justify-center z-10 animate-slide-up pb-10">
+                            <svg width="240" height="500" viewBox="0 0 180 400" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-xl transform group-hover:scale-105 transition-transform duration-700">
+                                <path d="M90 380 C130 380 160 330 160 260 C160 190 110 120 98 60 L90 20 L82 60 C70 120 20 190 20 260 C20 330 50 380 90 380 Z" fill="#2A2A2A" stroke="#1a1a1a" stroke-width="2"/>
+                                <path d="M90 360 C110 360 120 320 120 280 C120 240 90 240 90 240 C90 240 60 240 60 280 C60 320 70 360 90 360 Z" fill="#1a1a1a"/>
+                                <line x1="86" y1="40" x2="86" y2="340" stroke="#d4af37" stroke-width="1" opacity="0.8"/>
+                                <line x1="88" y1="40" x2="88" y2="340" stroke="#d4af37" stroke-width="1" opacity="0.8"/>
+                                <line x1="92" y1="40" x2="92" y2="340" stroke="#d4af37" stroke-width="1" opacity="0.8"/>
+                                <line x1="94" y1="40" x2="94" y2="340" stroke="#d4af37" stroke-width="1" opacity="0.8"/>
+                                <rect x="70" y="330" width="40" height="6" fill="#4a3b32" rx="2" />
+                                <rect x="80" y="10" width="20" height="30" fill="#2A2A2A" />
+                            </svg>
+                        </div>
+
+                        <!-- 诗词印章 -->
+                        <div class="absolute top-10 right-8 w-8 h-24 border border-oriental-red opacity-60 flex items-center justify-center bg-white/80">
+                            <div class="writing-mode-vertical text-oriental-red font-serif text-sm font-bold tracking-widest pt-2">大珠小珠落玉盘</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- 评价 -->
-        <section id="reviews" class="py-10 bg-white/50 backdrop-blur-sm border-y border-oriental-ink/5">
-            <div class="px-6">
-                <h3 class="text-center font-serif text-oriental-ink text-lg mb-6 flex items-center justify-center gap-2">
-                    <span class="text-oriental-red">✦</span> <span data-i18n="review_title">Loved by Students Globally</span>
+        <!-- 评价 (横向网格) -->
+        <section id="reviews" class="py-20 border-t border-oriental-ink/5 relative bg-white/40 backdrop-blur-sm">
+            <div class="px-6 max-w-6xl mx-auto">
+                <h3 class="text-center font-serif text-oriental-ink text-2xl mb-12 flex items-center justify-center gap-3">
+                    <span class="text-oriental-red">✦</span> <span data-i18n="review_title">Loved by Students Globally</span> <span class="text-oriental-red">✦</span>
                 </h3>
-                <div class="flex flex-col gap-4 reveal-on-scroll">
-                    <div class="bg-oriental-bg p-5 rounded-lg border border-oriental-stone relative shadow-sm">
-                        <div class="absolute top-[-10px] left-4 bg-oriental-bg px-2 text-oriental-gold text-2xl font-serif">“</div>
-                        <p class="text-oriental-ink text-sm leading-relaxed mb-3 mt-1 italic font-serif" data-i18n="review_1">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 reveal-on-scroll">
+                    <!-- Review 1 -->
+                    <div class="bg-white p-8 rounded-sm shadow-sm hover:shadow-md transition-shadow border-t-2 border-oriental-gold">
+                        <div class="text-oriental-gold text-4xl font-serif mb-4">“</div>
+                        <p class="text-oriental-ink text-base leading-relaxed mb-6 italic font-serif" data-i18n="review_1">
                             I never thought I could learn Pipa online. The instructor makes the complex techniques like 'Lunzhi' so accessible.
                         </p>
-                        <div class="flex items-center justify-between border-t border-oriental-ink/5 pt-3">
-                            <span class="text-xs font-bold text-oriental-ink">Sarah J.</span>
-                            <span class="text-xs text-oriental-lightInk">London, UK</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 特性 -->
-        <section id="why-pipa" class="py-16 px-6 relative">
-            <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-oriental-stone/20 to-transparent pointer-events-none"></div>
-            <h2 class="font-serif text-3xl text-oriental-ink text-center mb-10 reveal-on-scroll" data-i18n="why_title">Why Learn Pipa?</h2>
-            <div class="space-y-8 relative z-10">
-                <div class="flex gap-5 items-start group reveal-on-scroll">
-                    <div class="w-12 h-12 shrink-0 bg-oriental-ink text-oriental-bg rounded-full flex items-center justify-center font-serif font-bold text-xl shadow-lg group-hover:bg-oriental-red transition-colors">1</div>
-                    <div>
-                        <h3 class="font-bold text-oriental-ink text-lg mb-2 font-serif" data-i18n="why_1_title">Mindfulness & Focus</h3>
-                        <p class="text-sm text-oriental-lightInk leading-relaxed" data-i18n="why_1_desc">Unlike western guitars, Pipa requires a unique connection between breath and finger movement.</p>
-                    </div>
-                </div>
-                <div class="flex gap-5 items-start group reveal-on-scroll">
-                    <div class="w-12 h-12 shrink-0 bg-oriental-ink text-oriental-bg rounded-full flex items-center justify-center font-serif font-bold text-xl shadow-lg group-hover:bg-oriental-red transition-colors">2</div>
-                    <div>
-                        <h3 class="font-bold text-oriental-ink text-lg mb-2 font-serif" data-i18n="why_2_title">Cultural Bridge</h3>
-                        <p class="text-sm text-oriental-lightInk leading-relaxed" data-i18n="why_2_desc">Impress your friends with a 2000-year-old instrument that tells stories of ancient battles.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 注册转化区 -->
-        <section id="signup" class="py-12 px-6 relative">
-            <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-oriental-stone to-transparent opacity-50 z-0"></div>
-            <div class="relative z-10 reveal-on-scroll">
-                <div class="text-center mb-8">
-                    <h2 class="font-serif text-3xl text-oriental-ink mb-3" data-i18n="contact_title">Start Your Journey</h2>
-                    <p class="text-oriental-lightInk italic font-serif" data-i18n="contact_subtitle">Choose how you want to connect.</p>
-                </div>
-
-                <div class="space-y-6">
-                    <div class="bg-oriental-ink text-oriental-bg p-6 rounded-xl relative overflow-hidden shadow-xl">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-oriental-red rounded-full blur-[60px] opacity-20 -mr-10 -mt-10 pointer-events-none"></div>
-                        
-                        <!-- 发送成功提示 -->
-                        <div id="form-success" class="hidden text-center py-6 animate-fade-in">
-                            <div class="w-12 h-12 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="check" class="w-6 h-6"></i></div>
-                            <h3 class="font-serif text-xl mb-1" data-i18n="success_title">Sent Successfully!</h3>
-                            <p class="text-sm text-gray-400"><span data-i18n="success_desc">Check your inbox:</span><br><span id="success-email" class="text-oriental-gold"></span></p>
-                        </div>
-
-                        <!-- 表单 -->
-                        <div id="form-content">
-                            <div class="flex items-start gap-3 mb-4">
-                                <i data-lucide="scroll" class="text-oriental-red mt-1 shrink-0 w-6 h-6"></i>
-                                <div>
-                                    <h3 class="font-serif text-xl font-bold mb-1" data-i18n="form_title">Free Pipa Starter Pack</h3>
-                                    <p class="text-sm text-gray-400 leading-relaxed" data-i18n="form_desc">Get beginner sheet music PDFs & introduction guide.</p>
-                                </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center font-serif font-bold text-oriental-ink">S</div>
+                            <div>
+                                <p class="text-sm font-bold text-oriental-ink">Sarah J.</p>
+                                <p class="text-xs text-oriental-lightInk">London, UK</p>
                             </div>
+                        </div>
+                    </div>
+                    <!-- Review 2 (Placeholder) -->
+                    <div class="bg-white p-8 rounded-sm shadow-sm hover:shadow-md transition-shadow border-t-2 border-oriental-red">
+                        <div class="text-oriental-gold text-4xl font-serif mb-4">“</div>
+                        <p class="text-oriental-ink text-base leading-relaxed mb-6 italic font-serif">
+                            The online course structure is brilliant. I can practice at my own pace and the feedback is super detailed.
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center font-serif font-bold text-oriental-ink">M</div>
+                            <div>
+                                <p class="text-sm font-bold text-oriental-ink">Mike T.</p>
+                                <p class="text-xs text-oriental-lightInk">New York, USA</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Review 3 (Placeholder) -->
+                     <div class="bg-white p-8 rounded-sm shadow-sm hover:shadow-md transition-shadow border-t-2 border-oriental-ink hidden md:block">
+                        <div class="text-oriental-gold text-4xl font-serif mb-4">“</div>
+                        <p class="text-oriental-ink text-base leading-relaxed mb-6 italic font-serif">
+                            A beautiful journey into Chinese culture. The Pipa sounds absolutely heavenly.
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center font-serif font-bold text-oriental-ink">Y</div>
+                            <div>
+                                <p class="text-sm font-bold text-oriental-ink">Yuki K.</p>
+                                <p class="text-xs text-oriental-lightInk">Tokyo, JP</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                            <form id="email-form" class="flex flex-col gap-3">
-                                <input type="email" name="email" id="user-email" required placeholder="Your Email Address" class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-gray-500 focus:outline-none focus:border-oriental-gold transition-colors">
-                                <button type="submit" id="submit-btn" class="w-full py-3 bg-oriental-red text-white font-medium rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
+        <!-- 特性 (横向排列) -->
+        <section id="why-pipa" class="py-24 px-6 relative overflow-hidden">
+            <h2 class="font-serif text-4xl text-oriental-ink text-center mb-16 reveal-on-scroll relative z-10" data-i18n="why_title">Why Learn Pipa?</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10 max-w-5xl mx-auto">
+                <div class="flex gap-6 items-start group reveal-on-scroll bg-white/60 p-6 rounded-lg hover:bg-white transition-colors">
+                    <div class="w-14 h-14 shrink-0 bg-oriental-ink text-oriental-bg rounded-full flex items-center justify-center font-serif font-bold text-2xl shadow-lg group-hover:bg-oriental-red transition-colors">1</div>
+                    <div>
+                        <h3 class="font-bold text-oriental-ink text-xl mb-3 font-serif" data-i18n="why_1_title">Mindfulness & Focus</h3>
+                        <p class="text-base text-oriental-lightInk leading-relaxed" data-i18n="why_1_desc">Unlike western guitars, Pipa requires a unique connection between breath and finger movement.</p>
+                    </div>
+                </div>
+                <div class="flex gap-6 items-start group reveal-on-scroll bg-white/60 p-6 rounded-lg hover:bg-white transition-colors">
+                    <div class="w-14 h-14 shrink-0 bg-oriental-ink text-oriental-bg rounded-full flex items-center justify-center font-serif font-bold text-2xl shadow-lg group-hover:bg-oriental-red transition-colors">2</div>
+                    <div>
+                        <h3 class="font-bold text-oriental-ink text-xl mb-3 font-serif" data-i18n="why_2_title">Cultural Bridge</h3>
+                        <p class="text-base text-oriental-lightInk leading-relaxed" data-i18n="why_2_desc">Impress your friends with a 2000-year-old instrument that tells stories of ancient battles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 注册转化区 (居中大气) -->
+        <section id="signup" class="py-24 px-6 relative">
+            <div class="max-w-4xl mx-auto relative z-10 reveal-on-scroll text-center">
+                <h2 class="font-serif text-4xl text-oriental-ink mb-4" data-i18n="contact_title">Start Your Journey Today</h2>
+                <p class="text-oriental-lightInk italic font-serif text-lg mb-12" data-i18n="contact_subtitle">Choose how you want to connect.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <!-- Email Form -->
+                    <div class="bg-oriental-ink text-oriental-bg p-8 rounded-xl relative overflow-hidden shadow-2xl text-left h-full">
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-oriental-red rounded-full blur-[80px] opacity-20 -mr-10 -mt-10 pointer-events-none"></div>
+                        
+                        <div id="form-content">
+                            <div class="flex items-center gap-3 mb-6">
+                                <i data-lucide="scroll" class="text-oriental-red w-8 h-8"></i>
+                                <h3 class="font-serif text-2xl font-bold" data-i18n="form_title">Free Starter Pack</h3>
+                            </div>
+                            <p class="text-gray-400 mb-6 text-sm" data-i18n="form_desc">Get beginner sheet music PDFs & introduction guide delivered to your inbox.</p>
+
+                            <form id="email-form" class="flex flex-col gap-4">
+                                <input type="email" name="email" id="user-email" required placeholder="name@example.com" class="w-full px-4 py-3 rounded bg-white/10 border border-white/20 text-white placeholder:text-gray-500 focus:outline-none focus:border-oriental-gold transition-colors">
+                                <button type="submit" id="submit-btn" class="w-full py-4 bg-oriental-red text-white font-medium rounded hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
                                     <span data-i18n="get_it_now">Get It Now</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                 </button>
                             </form>
                         </div>
+                        
+                        <!-- 成功状态 -->
+                        <div id="form-success" class="hidden text-center py-10 animate-fade-in h-full flex flex-col items-center justify-center">
+                            <div class="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mb-4"><i data-lucide="check" class="w-8 h-8"></i></div>
+                            <h3 class="font-serif text-2xl mb-2" data-i18n="success_title">Sent!</h3>
+                            <p class="text-sm text-gray-400"><span data-i18n="success_desc">Check:</span> <span id="success-email" class="text-oriental-gold block mt-1"></span></p>
+                        </div>
                     </div>
                     
-                    <div class="relative flex py-2 items-center">
-                        <div class="flex-grow border-t border-gray-300"></div><span class="flex-shrink mx-4 text-gray-400 text-xs uppercase tracking-wider font-serif">Or</span><div class="flex-grow border-t border-gray-300"></div>
+                    <!-- WeChat / Direct Contact -->
+                    <div class="bg-white p-8 rounded-xl border border-oriental-stone shadow-lg h-full flex flex-col justify-center text-left">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center"><i data-lucide="message-circle" class="w-5 h-5"></i></div>
+                            <h3 class="font-serif text-2xl font-bold text-oriental-ink">Direct Contact</h3>
+                        </div>
+                        <p class="text-oriental-lightInk mb-8 text-sm">Prefer real-time chat? Add me on WeChat for immediate response and private lesson booking.</p>
+                        
+                        <button onclick="openWeChatModal()" class="w-full py-4 border-2 border-oriental-ink text-oriental-ink rounded font-medium flex items-center justify-center gap-2 hover:bg-oriental-ink hover:text-white transition-all">
+                            <span data-i18n="wechat_btn">Book Private Lesson</span>
+                        </button>
                     </div>
-
-                    <button onclick="openWeChatModal()" class="w-full py-4 bg-white border-2 border-oriental-ink text-oriental-ink rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors shadow-[4px_4px_0px_0px_rgba(26,26,26,0.1)]">
-                        <i data-lucide="message-circle" class="w-5 h-5"></i>
-                        <span data-i18n="wechat_btn">Book Private Lesson (WeChat)</span>
-                    </button>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer class="py-12 text-center bg-oriental-bg relative">
-            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-[1px] bg-oriental-ink/10"></div>
-            <div class="w-16 h-16 border-2 border-oriental-red text-oriental-red rounded-sm flex items-center justify-center mx-auto mb-6 font-serif text-xl font-bold bg-white shadow-sm">PIPA</div>
-            <p class="text-xs text-oriental-lightInk mb-2 font-serif tracking-widest uppercase">PIPA Studio</p>
-            <p class="text-[10px] text-oriental-lightInk/60">© 2024 All Rights Reserved.</p>
+        <footer class="py-16 text-center bg-oriental-bg relative border-t border-oriental-stone">
+            <div class="w-20 h-20 border-2 border-oriental-red text-oriental-red rounded-sm flex items-center justify-center mx-auto mb-6 font-serif text-3xl font-bold bg-white shadow-sm">P</div>
+            <p class="text-sm text-oriental-lightInk mb-2 font-serif tracking-widest uppercase">PIPA Studio</p>
+            <p class="text-xs text-oriental-lightInk/60">© 2024 All Rights Reserved.</p>
         </footer>
 
-        <!-- AI Assistant -->
+        <!-- AI Assistant & Modals (保持不变) -->
         <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
             <div id="ai-chat-window" class="hidden bg-white w-72 rounded-xl shadow-2xl border border-oriental-stone overflow-hidden chat-enter mb-2">
                 <div class="bg-oriental-ink text-white p-4 flex justify-between items-center">
@@ -275,23 +351,22 @@
                     <button onclick="sendAIMessage()" class="bg-oriental-red text-white p-2 rounded hover:bg-red-700 transition-colors"><i data-lucide="send" class="w-3 h-3"></i></button>
                 </div>
             </div>
-            <button onclick="toggleAIChat()" class="w-12 h-12 bg-oriental-ink text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform hover:bg-oriental-red border-2 border-white"><i data-lucide="sparkles" class="w-5 h-5"></i></button>
+            <button onclick="toggleAIChat()" class="w-14 h-14 bg-oriental-ink text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform hover:bg-oriental-red border-2 border-white"><i data-lucide="sparkles" class="w-6 h-6"></i></button>
         </div>
 
-        <!-- WeChat Modal -->
         <div id="wechat-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-            <div class="bg-oriental-bg p-6 rounded-xl max-w-xs w-full shadow-2xl relative border-t-4 border-oriental-red transform scale-95 transition-transform duration-300" id="modal-content">
-                <button onclick="closeWeChatModal()" class="absolute top-4 right-4 text-oriental-lightInk hover:text-oriental-ink"><i data-lucide="x" class="w-5 h-5"></i></button>
-                <div class="text-center mb-6">
-                    <div class="w-12 h-12 bg-oriental-red/10 text-oriental-red rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="message-circle" class="w-6 h-6"></i></div>
-                    <h3 class="font-serif text-xl font-bold text-oriental-ink">Connect on WeChat</h3>
-                    <p class="text-sm text-oriental-lightInk mt-1">Copy ID to add me for lessons.</p>
+            <div class="bg-oriental-bg p-8 rounded-xl max-w-sm w-full shadow-2xl relative border-t-4 border-oriental-red transform scale-95 transition-transform duration-300" id="modal-content">
+                <button onclick="closeWeChatModal()" class="absolute top-4 right-4 text-oriental-lightInk hover:text-oriental-ink"><i data-lucide="x" class="w-6 h-6"></i></button>
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-oriental-red/10 text-oriental-red rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="message-circle" class="w-8 h-8"></i></div>
+                    <h3 class="font-serif text-2xl font-bold text-oriental-ink">Connect on WeChat</h3>
+                    <p class="text-oriental-lightInk mt-2">Add for lessons & inquiries.</p>
                 </div>
-                <div class="bg-white p-3 rounded-lg border border-oriental-stone flex items-center justify-between mb-4">
-                    <span class="font-mono font-bold text-oriental-ink" id="wechat-id-display">Loading...</span>
-                    <button onclick="copyWeChatID()" class="text-oriental-red hover:text-red-800 p-2 hover:bg-red-50 rounded transition-colors" id="copy-btn"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                <div class="bg-white p-4 rounded-lg border border-oriental-stone flex items-center justify-between mb-6 shadow-inner">
+                    <span class="font-mono font-bold text-oriental-ink text-lg" id="wechat-id-display">Loading...</span>
+                    <button onclick="copyWeChatID()" class="text-oriental-red hover:text-red-800 p-2 hover:bg-red-50 rounded transition-colors" id="copy-btn"><i data-lucide="copy" class="w-5 h-5"></i></button>
                 </div>
-                <div id="copy-success" class="text-center text-green-600 text-xs font-bold mb-4 bg-green-50 py-1 rounded hidden">ID Copied!</div>
+                <div id="copy-success" class="text-center text-green-600 text-sm font-bold bg-green-50 py-2 rounded hidden">ID Copied! Open WeChat.</div>
             </div>
         </div>
     </main>
@@ -301,7 +376,6 @@
         const CONFIG = {
             wechatId: "17778245026",
             myEmail: "1352382184@qq.com",
-            // ⚠️ 记得去 formspree.io 获取您的专属链接填在这里，才能实现“丝滑”发送
             formspreeUrl: "https://formspree.io/f/YOUR_FORM_ID" 
         };
 
@@ -309,89 +383,57 @@
         lucide.createIcons();
         document.getElementById('wechat-id-display').innerText = CONFIG.wechatId;
 
-        /* ================= 1. 多语言字典 (原生实现，保证显示) ================= */
+        /* ================= 1. 多语言字典 ================= */
         const TRANSLATIONS = {
             en: {
                 menu_home: "Home", menu_why: "Why Pipa", menu_reviews: "Reviews", menu_contact: "Contact",
-                hero_badge: "The Sound of the Orient",
-                hero_title_pre: "Find Inner Peace with",
-                hero_subtitle: "Experience the 2,000-year-old healing music. <br/> From TikTok clips to professional mastery.",
-                cta_button: "Start Your Journey", social_proof: "Join 5,000+ students worldwide",
-                review_title: "Loved by Students Globally",
-                review_1: "I never thought I could learn Pipa online. The instructor makes the complex techniques like 'Lunzhi' so accessible.",
-                why_title: "Why Learn Pipa?",
-                why_1_title: "Mindfulness & Focus", why_1_desc: "Unlike western guitars, Pipa requires a unique connection between breath and finger movement.",
-                why_2_title: "Cultural Bridge", why_2_desc: "Impress your friends with a 2000-year-old instrument that tells stories of ancient battles.",
-                contact_title: "Start Your Journey", contact_subtitle: "Choose how you want to connect.",
-                form_title: "Free Pipa Starter Pack", form_desc: "Get beginner sheet music PDFs & introduction guide.",
-                get_it_now: "Get It Now", wechat_btn: "Book Private Lesson (WeChat)",
-                success_title: "Sent Successfully!", success_desc: "Check your inbox:",
-                ai_welcome: "Hello! I can answer in your language."
+                hero_badge: "The Sound of the Orient", hero_title_pre: "Find Inner Peace with", hero_subtitle: "Experience the 2,000-year-old healing music. <br/> From TikTok clips to professional mastery.",
+                cta_button: "Start Journey", social_proof: "5k+ Joined",
+                review_title: "Loved by Students Globally", review_1: "I never thought I could learn Pipa online. The instructor makes the complex techniques like 'Lunzhi' so accessible.",
+                why_title: "Why Learn Pipa?", why_1_title: "Mindfulness & Focus", why_1_desc: "Unlike western guitars, Pipa requires a unique connection between breath and finger movement.", why_2_title: "Cultural Bridge", why_2_desc: "Impress your friends with a 2000-year-old instrument.",
+                contact_title: "Start Your Journey Today", contact_subtitle: "Choose how you want to connect.",
+                form_title: "Free Starter Pack", form_desc: "Get beginner sheet music PDFs & introduction guide delivered to your inbox.", get_it_now: "Get It Now", wechat_btn: "Book Private Lesson",
+                success_title: "Sent!", success_desc: "Check:", ai_welcome: "Hello! I can answer in your language."
             },
             zh: {
                 menu_home: "首页", menu_why: "为何学琵琶", menu_reviews: "评价", menu_contact: "联系",
-                hero_badge: "东方韵律",
-                hero_title_pre: "寻找内心的宁静",
-                hero_subtitle: "体验两千年的治愈之音。<br/> 从 TikTok 视频到专业大师。",
-                cta_button: "开启旅程", social_proof: "全球 5,000+ 学员",
-                review_title: "深受全球学员喜爱",
-                review_1: "没想到线上也能学琵琶。老师把“轮指”这样复杂的技巧讲得非常通俗易懂。",
-                why_title: "为什么学习琵琶？",
-                why_1_title: "正念与专注", why_1_desc: "不同于吉他，琵琶需要呼吸与指法的独特连接，这是一种冥想般的练习。",
-                why_2_title: "文化桥梁", why_2_desc: "用一件两千年的乐器，向朋友讲述古战场与春江花月夜的故事。",
-                contact_title: "开启您的旅程", contact_subtitle: "选择联系方式",
-                form_title: "免费领取琵琶入门包", form_desc: "获取入门曲谱 PDF 和介绍指南。",
-                get_it_now: "立即领取", wechat_btn: "预约私教课 (微信)",
-                success_title: "发送成功！", success_desc: "请检查您的邮箱：",
-                ai_welcome: "您好！我可以用中文为您解答。"
+                hero_badge: "东方韵律", hero_title_pre: "寻找内心的宁静", hero_subtitle: "体验两千年的治愈之音。<br/> 从 TikTok 视频到专业大师。",
+                cta_button: "开启旅程", social_proof: "5千+ 学员",
+                review_title: "深受全球学员喜爱", review_1: "没想到线上也能学琵琶。老师把“轮指”技巧讲得通俗易懂。",
+                why_title: "为什么学习琵琶？", why_1_title: "正念与专注", why_1_desc: "琵琶需要呼吸与指法的独特连接，是一种冥想般的练习。", why_2_title: "文化桥梁", why_2_desc: "用一件两千年的乐器讲述古老的故事。",
+                contact_title: "立即开启旅程", contact_subtitle: "选择联系方式",
+                form_title: "免费入门资料包", form_desc: "获取入门曲谱和指南，发送至您的邮箱。", get_it_now: "立即领取", wechat_btn: "预约私教 (微信)",
+                success_title: "已发送！", success_desc: "请查收：", ai_welcome: "您好！我可以用中文为您解答。"
             },
             jp: {
                 menu_home: "ホーム", menu_why: "琵琶の魅力", menu_reviews: "レビュー", menu_contact: "お問い合わせ",
-                hero_badge: "東洋の響き", hero_title_pre: "心の平安を見つける",
-                hero_subtitle: "2000年の歴史を持つ癒しの音楽。<br/> TikTokからプロの演奏まで。",
-                cta_button: "旅を始める", social_proof: "世界中の5,000人以上の生徒",
-                review_title: "世界中の生徒に愛されています",
-                review_1: "オンラインで琵琶が学べるとは思いませんでした。「輪指」のような難しい技術もわかりやすいです。",
-                why_title: "なぜ琵琶を学ぶのか？",
-                why_1_title: "マインドフルネス", why_1_desc: "ギターとは異なり、琵琶は呼吸と指の動きのつながりを必要とします。",
-                why_2_title: "文化の架け橋", why_2_desc: "2000年の歴史を持つ楽器で、古代の戦いや静かな川の物語を語りましょう。",
-                contact_title: "旅を始めよう", contact_subtitle: "連絡方法を選択してください",
-                form_title: "無料スターターパック", form_desc: "初心者向けの楽譜PDFとガイドを入手。",
-                get_it_now: "今すぐ入手", wechat_btn: "プライベートレッスン (WeChat)",
-                success_title: "送信完了！", success_desc: "メールを確認してください：",
-                ai_welcome: "こんにちは！日本語でお答えします。"
+                hero_badge: "東洋の響き", hero_title_pre: "心の平安を見つける", hero_subtitle: "2000年の歴史を持つ癒しの音楽。",
+                cta_button: "旅を始める", social_proof: "5000人+ 参加",
+                review_title: "生徒の声", review_1: "オンラインで琵琶が学べるとは。「輪指」もわかりやすいです。",
+                why_title: "なぜ琵琶？", why_1_title: "マインドフルネス", why_1_desc: "呼吸と指の動きのつながりを必要とします。", why_2_title: "文化の架け橋", why_2_desc: "2000年の歴史を持つ楽器。",
+                contact_title: "旅を始めよう", contact_subtitle: "連絡方法を選択",
+                form_title: "無料スターターパック", form_desc: "楽譜PDFとガイドを入手。", get_it_now: "今すぐ入手", wechat_btn: "レッスン予約 (WeChat)",
+                success_title: "送信完了！", success_desc: "確認：", ai_welcome: "こんにちは！日本語でお答えします。"
             },
             fr: {
-                menu_home: "Accueil", menu_why: "Pourquoi Pipa", menu_reviews: "Avis", menu_contact: "Contact",
-                hero_badge: "Le Son de l'Orient", hero_title_pre: "Trouvez la paix intérieure avec",
-                hero_subtitle: "Découvrez la musique curative vieille de 2 000 ans.",
-                cta_button: "Commencer", social_proof: "Rejoignez +5000 étudiants",
-                review_title: "Aimé par les étudiants",
-                review_1: "Je ne pensais pas pouvoir apprendre le Pipa en ligne. L'instructeur rend les techniques accessibles.",
-                why_title: "Pourquoi apprendre le Pipa ?",
-                why_1_title: "Pleine conscience", why_1_desc: "Contrairement à la guitare, le Pipa nécessite une connexion unique entre le souffle et le doigt.",
-                why_2_title: "Pont culturel", why_2_desc: "Impressionnez vos amis avec un instrument vieux de 2000 ans.",
-                contact_title: "Commencez votre voyage", contact_subtitle: "Choisissez comment vous connecter.",
-                form_title: "Pack de démarrage gratuit", form_desc: "Obtenez des partitions PDF pour débutants.",
-                get_it_now: "Obtenir maintenant", wechat_btn: "Leçon privée (WeChat)",
-                success_title: "Envoyé !", success_desc: "Vérifiez votre boîte de réception :",
-                ai_welcome: "Bonjour ! Je peux répondre en français."
+                menu_home: "Accueil", menu_why: "Pourquoi", menu_reviews: "Avis", menu_contact: "Contact",
+                hero_badge: "Le Son de l'Orient", hero_title_pre: "Paix intérieure avec", hero_subtitle: "Musique curative de 2 000 ans.",
+                cta_button: "Commencer", social_proof: "Rejoignez +5000",
+                review_title: "Avis des étudiants", review_1: "L'instructeur rend les techniques accessibles.",
+                why_title: "Pourquoi le Pipa ?", why_1_title: "Pleine conscience", why_1_desc: "Nécessite une connexion souffle-doigt.", why_2_title: "Pont culturel", why_2_desc: "Un instrument de 2000 ans.",
+                contact_title: "Commencez", contact_subtitle: "Connectez-vous.",
+                form_title: "Pack gratuit", form_desc: "Obtenez des partitions PDF.", get_it_now: "Obtenir", wechat_btn: "Leçon privée",
+                success_title: "Envoyé !", success_desc: "Vérifiez :", ai_welcome: "Bonjour !"
             },
             es: {
-                menu_home: "Inicio", menu_why: "Por qué Pipa", menu_reviews: "Reseñas", menu_contact: "Contacto",
-                hero_badge: "El Sonido de Oriente", hero_title_pre: "Encuentra la paz interior con",
-                hero_subtitle: "Experimenta la música curativa de 2.000 años.",
-                cta_button: "Empezar", social_proof: "Únete a +5000 estudiantes",
-                review_title: "Amado por estudiantes",
-                review_1: "Nunca pensé que podría aprender Pipa en línea. El instructor hace accesibles las técnicas complejas.",
-                why_title: "¿Por qué aprender Pipa?",
-                why_1_title: "Atención plena", why_1_desc: "A diferencia de la guitarra, el Pipa requiere una conexión única entre la respiración y el dedo.",
-                why_2_title: "Puente cultural", why_2_desc: "Impresiona a tus amigos con un instrumento de 2000 años.",
-                contact_title: "Comienza tu viaje", contact_subtitle: "Elige cómo conectarte.",
-                form_title: "Pack de inicio gratuito", form_desc: "Obtén partituras PDF para principiantes.",
-                get_it_now: "Conseguir ahora", wechat_btn: "Lección privada (WeChat)",
-                success_title: "¡Enviado!", success_desc: "Revisa tu bandeja de entrada:",
-                ai_welcome: "¡Hola! Puedo responder en español."
+                menu_home: "Inicio", menu_why: "Por qué", menu_reviews: "Reseñas", menu_contact: "Contacto",
+                hero_badge: "Sonido de Oriente", hero_title_pre: "Paz interior con", hero_subtitle: "Música curativa de 2.000 años.",
+                cta_button: "Empezar", social_proof: "+5000 unidos",
+                review_title: "Reseñas", review_1: "El instructor hace accesibles las técnicas.",
+                why_title: "¿Por qué Pipa?", why_1_title: "Atención plena", why_1_desc: "Requiere conexión respiración-dedo.", why_2_title: "Puente cultural", why_2_desc: "Instrumento de 2000 años.",
+                contact_title: "Empieza hoy", contact_subtitle: "Conéctate.",
+                form_title: "Pack gratuito", form_desc: "Obtén partituras PDF.", get_it_now: "Obtener", wechat_btn: "Clase privada",
+                success_title: "¡Enviado!", success_desc: "Revisa:", ai_welcome: "¡Hola!"
             }
         };
 
@@ -415,38 +457,27 @@
             
             // 动画反馈
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Processing...';
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
             lucide.createIcons();
 
             // 检查是否配置了 Formspree (丝滑模式)
             if (!CONFIG.formspreeUrl.includes("YOUR_FORM_ID")) {
                 try {
                     const response = await fetch(CONFIG.formspreeUrl, {
-                        method: 'POST',
-                        body: new FormData(form),
-                        headers: { 'Accept': 'application/json' }
+                        method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' }
                     });
-                    if (response.ok) {
-                        showSuccess(userEmail);
-                        return;
-                    }
-                } catch (err) {
-                    console.error(err);
-                }
+                    if (response.ok) { showSuccess(userEmail); return; }
+                } catch (err) { console.error(err); }
             }
 
-            // 【保底方案】如果没配置或发送失败，直接唤起邮件APP
-            // 这样保证用户点击了一定有反应
+            // 【保底方案】
             setTimeout(() => {
-                alert("即将为您打开邮件应用发送请求...\nOpening your mail app...");
-                const subject = "I want the Pipa Starter Pack";
-                const body = `Hi PIPA Studio,\n\nPlease send the starter pack to: ${userEmail}`;
+                alert("即将打开邮件APP发送... (Opening Mail App...)");
+                const subject = "Request: Pipa Starter Pack";
+                const body = `Hi,\n\nPlease send the starter pack to: ${userEmail}`;
                 window.location.href = `mailto:${CONFIG.myEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                
-                // 恢复按钮
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-            }, 1000);
+                submitBtn.disabled = false; submitBtn.innerHTML = originalText;
+            }, 800);
         });
 
         function showSuccess(email) {
@@ -456,7 +487,6 @@
         }
 
         /* ================= 3. AI & 其他逻辑 ================= */
-        // AI 逻辑略 (保持不变，已支持多语言检测)
         function detectLanguage(text) { if (/[\u4e00-\u9fa5]/.test(text)) return 'zh'; return 'en'; }
         function sendAIMessage() {
             const input = document.getElementById('ai-input');
@@ -468,29 +498,22 @@
 
             setTimeout(() => {
                 const lang = detectLanguage(text);
-                // 简单的关键词回复
                 let reply = lang === 'zh' ? "请直接加微信咨询！" : "Please contact via WeChat!";
                 if (text.toLowerCase().includes("mail") || text.includes("邮")) reply = `${CONFIG.myEmail}`;
                 else if (text.toLowerCase().includes("chat") || text.includes("信")) reply = `${CONFIG.wechatId}`;
-                
                 body.innerHTML += `<div class="text-left mb-2"><span class="inline-block bg-white border border-gray-200 p-2 rounded-lg rounded-tl-none text-oriental-ink text-xs">${reply}</span></div>`;
                 body.scrollTop = body.scrollHeight;
             }, 600);
         }
         document.getElementById('ai-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAIMessage(); });
 
-        // UI 逻辑
         function toggleAIChat() { document.getElementById('ai-chat-window').classList.toggle('hidden'); }
-        function toggleMenu() { 
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('translate-x-full'); 
-        }
+        function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('translate-x-full'); }
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('is-visible'); });
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
         
-        // 微信弹窗
         const modal = document.getElementById('wechat-modal');
         function openWeChatModal() { modal.classList.remove('hidden'); requestAnimationFrame(() => { modal.classList.remove('opacity-0'); }); }
         function closeWeChatModal() { modal.classList.add('opacity-0'); setTimeout(() => modal.classList.add('hidden'), 300); }
@@ -503,7 +526,7 @@
         modal.addEventListener('click', (e) => { if (e.target === modal) closeWeChatModal(); });
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            window.scrollY > 50 ? nav.classList.add('bg-[#fdfbf7]/95', 'backdrop-blur-md', 'shadow-sm') : nav.classList.remove('bg-[#fdfbf7]/95', 'backdrop-blur-md', 'shadow-sm');
+            window.scrollY > 50 ? nav.classList.add('bg-[#fbf9f4]/95', 'backdrop-blur-md', 'shadow-sm') : nav.classList.remove('bg-[#fbf9f4]/95', 'backdrop-blur-md', 'shadow-sm');
         });
     </script>
 </body>
